@@ -1,10 +1,11 @@
 package com.example.demo.Service.Role.Imp;
 
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Dto.RoleDto;
 import com.example.demo.Entity.Role;
 import com.example.demo.Exception.BaseException;
 import com.example.demo.Repository.RoleRepository;
+import com.example.demo.Service.Role.Mapper.RoleMapper;
 import com.example.demo.Service.Role.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,15 @@ import java.util.stream.Collectors;
 public class RoleServiceImp implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private RoleMapper roleMapper;
     @Override
     public RoleDto createRole(RoleDto request){
         Role role = new Role();
         role.setName(request.getName());
+        role.setDelete(request.isDelete());
         roleRepository.save(role);
-        return RoleDto.builder()
-                .id(role.getId().toString())
-                .name(role.getName())
-                .build();
+        return roleMapper.mapper(role);
     }
     @Override
     public Void deleteRole(RoleDto request){
@@ -41,19 +42,13 @@ public class RoleServiceImp implements RoleService {
                 .orElseThrow(() -> new BaseException(ErrorCode.FAILED));
         role.setName(request.getName());
         roleRepository.save(role);
-        return RoleDto.builder()
-                .id(role.getId().toString())
-                .name(role.getName())
-                .build();
+        return roleMapper.mapper(role);
     }
     @Override
     public List<RoleDto> getRole(){
         List<Role> roles = roleRepository.findAll();
         return roles.stream()
-                .map(role -> RoleDto.builder()
-                        .id(role.getId().toString())
-                        .name(role.getName())
-                        .build())
+                .map(role -> roleMapper.mapper(role))
                 .collect(Collectors.toList());
     }
 

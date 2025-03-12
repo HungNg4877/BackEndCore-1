@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Common.SuccessMessage;
+import com.example.demo.Common.Success.SuccessMessage;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Dto.RoleDto;
 import com.example.demo.Service.Role.RoleService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.demo.Common.EndPointConstant.ROLES;
+import static com.example.demo.Common.EndPoint.EndPointConstant.ROLES;
 
 @RestController
 @RequestMapping(value = ROLES)

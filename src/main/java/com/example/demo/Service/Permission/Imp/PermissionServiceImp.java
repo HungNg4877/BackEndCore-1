@@ -1,13 +1,14 @@
 package com.example.demo.Service.Permission.Imp;
 
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Dto.PermissionDto;
 import com.example.demo.Dto.Request.PagingRequest;
-import com.example.demo.Dto.RoleDto;
 import com.example.demo.Entity.Permission;
 import com.example.demo.Entity.Role;
+import com.example.demo.Entity.RolePermission;
 import com.example.demo.Exception.BaseException;
 import com.example.demo.Repository.PermissionRepository;
+import com.example.demo.Repository.RolePermissionRepository;
 import com.example.demo.Repository.RoleRepository;
 import com.example.demo.Service.Filter.IdFilter;
 import com.example.demo.Service.Permission.Mapper.PermissionMapper;
@@ -31,14 +32,26 @@ public class PermissionServiceImp implements PermissionService {
     private PermissionMapper permissionMapper;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private RolePermissionRepository rolePermissionRepository;
     @Override
-    public PermissionDto createPermission(PermissionDto request){
+    public PermissionDto createPermission(PermissionDto request) {
+        // 1. Tìm kiếm Role theo tên (nếu không có thì báo lỗi)
+        Role role = roleRepository.findByName(request.getRoleName());
+        // 2. Tạo mới Permission từ dữ liệu trong request
         Permission permission = new Permission();
         permission.setName(request.getName());
         permission.setMethod(request.getMethod());
         permission.setModules(request.getModule());
         permission.setApiPath(request.getApiPath());
-        permissionRepository.save(permission);
+        permission.setDelete(request.isDelete());
+        permission = permissionRepository.save(permission); // Lưu vào DB
+
+        // 3. Tạo mối quan hệ RolePermission và lưu vào DB
+        RolePermission rolePermission = new RolePermission(role.getId(), permission.getId());
+        rolePermissionRepository.save(rolePermission);
+
+        // 4. Trả về kết quả dưới dạng PermissionDto
         return permissionMapper.mapper(permission);
     }
     @Override
@@ -49,14 +62,14 @@ public class PermissionServiceImp implements PermissionService {
         return null;
     }
     @Override
-    public Void updatePermission(PermissionDto request) {
+    public PermissionDto updatePermission(PermissionDto request) {
         Permission permission = findById(request.getId());
         permission.setName(request.getName());
         permission.setMethod(request.getMethod());
         permission.setModules(request.getModule());
         permission.setApiPath(request.getApiPath());
         permissionRepository.save(permission);
-        return null;
+        return permissionMapper.mapper(permission);
     }
     @Override
     public Page<PermissionDto> getPermission(PagingRequest<IdFilter> pagingRequest){

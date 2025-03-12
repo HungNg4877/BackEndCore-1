@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.Success;
 
 import lombok.Getter;
 

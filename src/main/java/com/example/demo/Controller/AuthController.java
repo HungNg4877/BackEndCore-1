@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Common.SuccessMessage;
+import com.example.demo.Common.Success.SuccessMessage;
 import com.example.demo.Dto.Request.LoginRequest;
 import com.example.demo.Dto.Request.RegisterRequest;
 import com.example.demo.Dto.Request.SetPasswordRequest;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.Common.EndPointConstant.*;
+import static com.example.demo.Common.EndPoint.EndPointConstant.*;
 
 @RestController
 @RequestMapping(value = AUTH)

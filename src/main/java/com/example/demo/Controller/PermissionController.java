@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Common.SuccessMessage;
+import com.example.demo.Common.Success.SuccessMessage;
 import com.example.demo.Dto.PermissionDto;
 import com.example.demo.Dto.Request.PagingRequest;
 import com.example.demo.Dto.Response.ApiResponse;
@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.Common.EndPointConstant.PERMISSIONS;
-import static com.example.demo.Common.EndPointConstant.VIEW_LIST;
+import static com.example.demo.Common.EndPoint.EndPointConstant.PERMISSIONS;
+import static com.example.demo.Common.EndPoint.EndPointConstant.VIEW_LIST;
 
 @RestController
 @RequestMapping(value = PERMISSIONS)
@@ -31,9 +31,9 @@ public class PermissionController {
         return  ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), null));
     }
     @PutMapping
-    public ResponseEntity<ApiResponse<Void>> updatePermission(@RequestBody PermissionDto request){
-        permissionService.updatePermission(request);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), null));
+    public ResponseEntity<ApiResponse<PermissionDto>> updatePermission(@RequestBody PermissionDto request){
+        PermissionDto response = permissionService.updatePermission(request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), response));
     }
     @PostMapping(VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<PermissionDto>>> getPermission(@RequestBody PagingRequest<IdFilter> pagingRequest){

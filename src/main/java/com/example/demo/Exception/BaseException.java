@@ -1,8 +1,7 @@
 package com.example.demo.Exception;
 
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Error.ErrorCode;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

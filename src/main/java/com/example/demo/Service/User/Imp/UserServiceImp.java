@@ -1,6 +1,6 @@
 package com.example.demo.Service.User.Imp;
 
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Entity.User;
 import com.example.demo.Exception.BaseException;
 import com.example.demo.Repository.UserRepository;

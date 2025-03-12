@@ -2,8 +2,8 @@ package com.example.demo.Service.Cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.example.demo.Common.AttributeConstant;
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Cloudinary.AttributeConstant;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Common.MediaType;
 import com.example.demo.Exception.BaseException;
 import lombok.RequiredArgsConstructor;

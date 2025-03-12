@@ -13,6 +13,7 @@ public class PermissionMapper {
                 .apiPath(permission.getApiPath())
                 .method(permission.getMethod())
                 .module(permission.getModules())
+                .isDelete(permission.isDelete())
                 .build();
     }
 }

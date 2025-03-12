@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.Cloudinary;
 
 public class AttributeConstant {
     public static final String CLOUDINARY_URL = "url";

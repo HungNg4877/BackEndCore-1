@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class RoleDto {
     private String id;
     private String name;
-    private String isDelete;
+    private boolean isDelete;
 }

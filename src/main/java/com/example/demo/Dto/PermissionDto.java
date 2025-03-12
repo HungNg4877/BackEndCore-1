@@ -17,5 +17,6 @@ public class PermissionDto {
     private String method;
     private String module;
     private String apiPath;
-    private String isDelete;
+    private boolean isDelete;
+    private String roleName;
 }

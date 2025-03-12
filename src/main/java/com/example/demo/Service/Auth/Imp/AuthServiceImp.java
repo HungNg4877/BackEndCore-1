@@ -1,8 +1,8 @@
 package com.example.demo.Service.Auth.Imp;
 
-import com.example.demo.Common.AttributeConstant;
-import com.example.demo.Common.ErrorCode;
-import com.example.demo.Common.SuccessMessage;
+import com.example.demo.Common.Cloudinary.AttributeConstant;
+import com.example.demo.Common.Error.ErrorCode;
+import com.example.demo.Common.Success.SuccessMessage;
 import com.example.demo.Dto.Request.LoginRequest;
 import com.example.demo.Dto.Request.RegisterRequest;
 import com.example.demo.Dto.Request.SetPasswordRequest;

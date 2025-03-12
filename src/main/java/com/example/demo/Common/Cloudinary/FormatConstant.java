@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.Cloudinary;
 
 public class FormatConstant {
     public static final String CLOUDINARY_PUBLIC_ID_SAVE_FORMAT = "%s%s%s";

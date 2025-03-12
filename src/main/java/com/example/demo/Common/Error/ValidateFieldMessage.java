@@ -1,7 +1,6 @@
-package com.example.demo.Common;
+package com.example.demo.Common.Error;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

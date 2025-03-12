@@ -1,7 +1,7 @@
 package com.example.demo.Dto.Request;
 
-import com.example.demo.Common.PatternConstant;
-import com.example.demo.Common.ValidateFieldMessage;
+import com.example.demo.Common.Pattern.PatternConstant;
+import com.example.demo.Common.Error.ValidateFieldMessage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

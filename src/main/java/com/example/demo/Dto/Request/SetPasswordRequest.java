@@ -1,6 +1,6 @@
 package com.example.demo.Dto.Request;
 
-import com.example.demo.Common.PatternConstant;
+import com.example.demo.Common.Pattern.PatternConstant;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.EndPoint;
 
 public class EndPointConstant {
     public static final String BASE_API = "/api/v1";

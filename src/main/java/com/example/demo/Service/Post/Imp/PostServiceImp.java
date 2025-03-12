@@ -1,7 +1,9 @@
 package com.example.demo.Service.Post.Imp;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.example.demo.Common.*;
+import com.example.demo.Common.Cloudinary.AttributeConstant;
+import com.example.demo.Common.Cloudinary.FormatConstant;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Dto.PostDto;
 import com.example.demo.Dto.Request.CreatePostRequest;
 import com.example.demo.Dto.Request.PagingRequest;
@@ -29,7 +31,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.sql.SQLException;
 import java.util.*;

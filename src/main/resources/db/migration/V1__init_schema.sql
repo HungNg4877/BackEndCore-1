@@ -1,11 +1,11 @@
-CREATE TABLE "setting"
-(
-    "id"            uuid PRIMARY KEY,
-    "key"           varchar,
-    "value"         varchar,
-    "created_at"          timestamp,
-    "last_modified"       timestamp
-);
+--CREATE TABLE "setting"
+--(
+--    "id"            uuid PRIMARY KEY,
+--    "key"           varchar,
+--    "value"         varchar,
+--    "created_at"          timestamp,
+--    "last_modified"       timestamp
+--);
 CREATE TABLE "users"
 (
     "id"                  uuid PRIMARY KEY,

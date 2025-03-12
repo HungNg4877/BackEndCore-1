@@ -4,6 +4,8 @@ import com.example.demo.Dto.Request.LoginRequest;
 import com.example.demo.Entity.Permission;
 import com.example.demo.Entity.User;
 import com.nimbusds.jose.util.Base64;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -19,8 +21,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SecurityUtil {
-
-    private final JwtEncoder jwtEncoder;
+    @Autowired
+    private JwtEncoder jwtEncoder;
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS256;
 
@@ -33,19 +35,16 @@ public class SecurityUtil {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshTokenExpiration;
 
-    @Autowired
-    public SecurityUtil(JwtEncoder jwtEncoder) {
-        this.jwtEncoder = jwtEncoder;
-    }
+
 
     public String createAccessToken(User request) {
 
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
         List<String> permission = request.getRole().getRolePermissions().stream()
-                .map(rolePermission -> rolePermission.getPermission())
-                .map(Permission::getApiPath)
-                .collect(Collectors.toList());
+                .map(rolePermission -> rolePermission.getPermission())// Lấy ra các đối tượng Permission
+                .map(Permission::getApiPath)// Lấy giá trị apiPath từ mỗi Permission
+                .collect(Collectors.toList()); // Thu thập kết quả thành một List<String> chứa tất cả apiPath.
 
         // @formatter:off //Data in Token (Payload)
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -83,10 +82,6 @@ public class SecurityUtil {
 
     }
 
-    private SecretKey getSecretKey() {
-        byte[] keyBytes = Base64.from(jwtKey).decode();
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
-    }
 
 //1. Client -> Token in Header Request
 //2. After Config OAUTH2 -> Auto Active filter BearerTokenAuthenticationFilter -> Auto Substring BearToken

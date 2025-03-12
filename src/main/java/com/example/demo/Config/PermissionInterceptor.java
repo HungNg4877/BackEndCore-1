@@ -1,6 +1,6 @@
 package com.example.demo.Config;
 
-import com.example.demo.Common.ErrorCode;
+import com.example.demo.Common.Error.ErrorCode;
 import com.example.demo.Entity.Permission;
 import com.example.demo.Entity.RolePermission;
 import com.example.demo.Entity.User;

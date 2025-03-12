@@ -11,6 +11,6 @@ import java.util.List;
 public interface PermissionService {
     PermissionDto createPermission(PermissionDto request);
     Void deletePermission(PermissionDto request);
-    Void updatePermission(PermissionDto request);
+    PermissionDto updatePermission(PermissionDto request);
     Page<PermissionDto> getPermission(PagingRequest<IdFilter> pagingRequest);
 }
