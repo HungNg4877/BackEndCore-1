@@ -23,3 +23,7 @@ VALUES
   ('6b57f6ba-0155-479e-a887-2217a8d98991', 'admin', CURRENT_DATE,false),
   ('9e90e372-1c3d-46a8-88e5-5148c5a27c91', 'user', CURRENT_DATE,false);
 
+INSERT INTO public.setting (id, key, value, created_at, last_modified) VALUES ('a66aa00d-db57-41ce-a2e6-73699318d0a9', 'MAX_REPORTS', '5', '2024-10-21 13:48:55.034981', '2024-10-21 13:48:55.034981');
+INSERT INTO public.setting (id, key, value, created_at, last_modified) VALUES ('f362ab8c-af3e-47ff-9665-fd85eb046ddd', 'APPROVE_TIME', '100000', '2024-10-21 13:49:17.053450', '2024-10-21 13:49:17.053450');
+
+

@@ -1,13 +1,12 @@
 package com.example.demo.Service.Auth.Imp;
 
-import com.example.demo.Common.Cloudinary.AttributeConstant;
-import com.example.demo.Common.Error.ErrorCode;
+import com.example.demo.Common.Error.ErrorMessage;
 import com.example.demo.Common.Success.SuccessMessage;
-import com.example.demo.Dto.Request.LoginRequest;
-import com.example.demo.Dto.Request.RegisterRequest;
-import com.example.demo.Dto.Request.SetPasswordRequest;
-import com.example.demo.Dto.Response.RegisterResponse;
-import com.example.demo.Dto.TokenDto;
+import com.example.demo.DTO.Request.LoginRequest;
+import com.example.demo.DTO.Request.RegisterRequest;
+import com.example.demo.DTO.Request.SetPasswordRequest;
+import com.example.demo.DTO.Response.RegisterResponse;
+import com.example.demo.DTO.TokenDTO;
 import com.example.demo.Entity.Otp;
 import com.example.demo.Entity.Role;
 import com.example.demo.Entity.Token;
@@ -51,10 +50,10 @@ public class AuthServiceImp implements AuthService {
     @Autowired
     private EmailUtil emailUtil;
     @Override
-    public TokenDto authenticate(LoginRequest request) {
+    public TokenDTO authenticate(LoginRequest request) {
         User user = findByEmail(request.getEmail());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BaseException(ErrorCode.WRONG_PASSWORD);
+            throw new BaseException(ErrorMessage.WRONG_PASSWORD);
         }
         String accessToken = securityUtil.createAccessToken(user);
         String refreshToken = securityUtil.createRefreshToken(user);
@@ -64,29 +63,29 @@ public class AuthServiceImp implements AuthService {
                 .user(user)
                 .build();
         tokenRepository.save(token);
-        return TokenDto.builder()
+        return TokenDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
     @Override
-    public TokenDto refreshToken(HttpServletRequest request) {
+    public TokenDTO refreshToken(HttpServletRequest request) {
 
-        String authHeader = request.getHeader(AttributeConstant.HEADER_AUTHORIZATION);
+        String authHeader = request.getHeader("Authorization");
         String refreshToken;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         refreshToken = authHeader.substring(7);
         Token token = tokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new BaseException(ErrorMessage.INVALID_REFRESH_TOKEN));
 
         User user = token.getUser();
         String newAccessToken = securityUtil.createAccessToken(user);
         String newRefreshToken = securityUtil.createRefreshToken(user);
         token.setAccessToken(newAccessToken);
         tokenRepository.save(token);
-        return TokenDto.builder()
+        return TokenDTO.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .build();
@@ -94,10 +93,10 @@ public class AuthServiceImp implements AuthService {
     @Override
     public RegisterResponse saveUser(RegisterRequest registerRequest) {
         if (isEmailExist(registerRequest.getEmail())) {
-            throw new BaseException(ErrorCode.USER_EXIST);
+            throw new BaseException(ErrorMessage.USER_EXIST);
         }
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new BaseException(ErrorCode.WRONG_PASSWORD);
+            throw new BaseException(ErrorMessage.WRONG_PASSWORD);
         }
         User user = new User();
         user.setFirstName(registerRequest.getFirstName());
@@ -114,8 +113,8 @@ public class AuthServiceImp implements AuthService {
             userRole = roleRepository.findByName("admin");
         }
         user.setRole(userRole);
-        User savedUser = this.userRepository.save(user);  //save User
-        return new RegisterResponse(  //Response Register
+        User savedUser = this.userRepository.save(user);
+        return new RegisterResponse(
                 savedUser.getFirstName(),
                 savedUser.getLastName(),
                 savedUser.getEmail());
@@ -123,7 +122,7 @@ public class AuthServiceImp implements AuthService {
     @Override
     public Void logout(String refreshToken) {
         Token token = tokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new BaseException(ErrorMessage.INVALID_REFRESH_TOKEN));
         token.setRevoked(true);
         return null;
     }
@@ -139,15 +138,15 @@ public class AuthServiceImp implements AuthService {
         try {
             emailUtil.sendOtpEmail(email, otp); // Send OTP to Email
         } catch (MessagingException e) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         return SuccessMessage.SUCCESS.getMessage();
     }
     @Override
-    public TokenDto verifyAccount(String email, String otp) {
+    public TokenDTO verifyAccount(String email, String otp) {
         User user = findByEmail(email);
         Otp geotp = otpRepository.findByUserAndOtp(user, otp)
-                .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(ErrorMessage.OTP_DOES_NOT_EXIST));
         List<Token> extoken = tokenRepository.findByUser(user);
         for (Token token : extoken) {
             token.setRevoked(true);
@@ -167,19 +166,19 @@ public class AuthServiceImp implements AuthService {
                 geotp.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (1 * 200)) {
             otpRepository.save(geotp);
-            return TokenDto.builder()
+            return TokenDTO.builder()
                     .accessToken(newAccessToken)
                     .refreshToken(newRefreshToken)
                     .build();
         }
-        throw new BaseException(ErrorCode.OTP_EXPIRED);
+        throw new BaseException(ErrorMessage.OTP_EXPIRED);
     }
     @Override
     public String setPassword(SetPasswordRequest setPasswordRequest) {
         String password = setPasswordRequest.getNewPassword();
         String confirmPassword = setPasswordRequest.getConfirmNewPassword();
         if (!password.equals(confirmPassword)) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         User user = findByEmail(setPasswordRequest.getEmail());
         String hashedPassword = passwordEncoder.encode(password);
@@ -191,6 +190,6 @@ public class AuthServiceImp implements AuthService {
         return this.userRepository.existsByEmail(email);
     }
     public User findByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        return userRepository.findByEmail(email).orElseThrow(() -> new BaseException(ErrorMessage.USER_DOES_NOT_EXIST));
     }
 }

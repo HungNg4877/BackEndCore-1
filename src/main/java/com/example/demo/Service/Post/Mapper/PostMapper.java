@@ -1,7 +1,7 @@
 package com.example.demo.Service.Post.Mapper;
 
-import com.example.demo.Dto.MediaDto;
-import com.example.demo.Dto.PostDto;
+import com.example.demo.DTO.MediaDTO;
+import com.example.demo.DTO.PostDTO;
 import com.example.demo.Entity.Media;
 import com.example.demo.Entity.Post;
 import com.example.demo.Entity.User;
@@ -11,8 +11,8 @@ import com.example.demo.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,36 +21,26 @@ public class PostMapper {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
 
-    public PostDto from(Post post, List<Media> mediaList, PostDto parentPost, User user) {
-        List<MediaDto> mediaDtoList = getMediaDtoList(mediaList);
-        long totalLikes = likeRepository.getTotalLikes(post.getId());
-        long totalComments = commentRepository.getTotalComments(post.getId());
-        long totalShares = postRepository.getTotalShares(post.getId());
-        boolean isLiked = likeRepository.findByUserAndPost(user.getId(), post.getId()) > 0;
-        boolean isOwner = post.getUser().getId().equals(user.getId());
-        return PostDto.builder()
+    public PostDTO from(Post post, List<Media> mediaList, PostDTO parentPost, User user) {
+        List<MediaDTO> mediaDTOList = mediaList.stream()
+                .map(media -> new MediaDTO(media.getId().toString(), media.getMediaType(), media.getMediaUrl()))
+                .collect(Collectors.toList());
+
+        return PostDTO.builder()
                 .id(post.getId().toString())
                 .content(post.getContent())
                 .firstName(post.getUser().getFirstName())
                 .lastName(post.getUser().getLastName())
                 .profilePictureUrl(post.getUser().getProfilePictureUrl())
-                .totalLikes(totalLikes)
-                .totalComments(totalComments)
-                .isLiked(isLiked)
-                .isOwner(isOwner)
-                .totalShares(totalShares)
+                .totalLikes(likeRepository.getTotalLikes(post.getId()))
+                .totalComments(commentRepository.getTotalComments(post.getId()))
+                .totalShares(postRepository.getTotalShares(post.getId()))
+                .isLiked(likeRepository.findByUserAndPost(user.getId(), post.getId()) > 0)
+                .isOwner(post.getUser().getId().equals(user.getId()))
                 .parentPost(parentPost)
-                .mediaList(mediaDtoList)
+                .mediaList(mediaDTOList)
                 .createdAt(post.getCreatedAt())
                 .lastModified(post.getLastModified())
                 .build();
-    }
-
-    private static List<MediaDto> getMediaDtoList(List<Media> mediaList) {
-        List<MediaDto> mediaDtoList = new ArrayList<>();
-        for (Media media : mediaList) {
-            mediaDtoList.add(new MediaDto(media.getId().toString(), media.getMediaType(), media.getMediaUrl()));
-        }
-        return mediaDtoList;
     }
 }

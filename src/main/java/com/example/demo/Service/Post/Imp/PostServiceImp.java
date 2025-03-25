@@ -1,14 +1,13 @@
 package com.example.demo.Service.Post.Imp;
 
-import com.example.demo.Common.*;
-import com.example.demo.Common.Cloudinary.AttributeConstant;
-import com.example.demo.Common.Cloudinary.FormatConstant;
-import com.example.demo.Common.Error.ErrorCode;
-import com.example.demo.Dto.PostDto;
-import com.example.demo.Dto.Request.CreatePostRequest;
-import com.example.demo.Dto.Request.PagingRequest;
-import com.example.demo.Dto.Request.UpdatePostRequest;
-import com.example.demo.Dto.Response.UserResponse;
+import com.example.demo.Common.Cloudinary.CloudinaryConstant;
+import com.example.demo.Common.Error.ErrorMessage;
+import com.example.demo.Common.PostConstant.PostConstant;
+import com.example.demo.Common.PostConstant.MediaType;
+import com.example.demo.DTO.PostDTO;
+import com.example.demo.DTO.Request.PagingRequest;
+import com.example.demo.DTO.Request.PostRequest;
+import com.example.demo.DTO.Response.UserResponse;
 import com.example.demo.Entity.Media;
 import com.example.demo.Entity.Post;
 import com.example.demo.Entity.User;
@@ -51,41 +50,41 @@ public class PostServiceImp implements PostService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public PostDto createPost(CreatePostRequest createPostRequest) {
+    public PostDTO createPost(PostRequest postRequest) {
         User user = userService.getCurrentUser();
-        Post parentPost = StringUtils.isBlank(createPostRequest.getParentPostId())
+        Post parentPost = StringUtils.isBlank(postRequest.getParentPostId())
                 ? null
-                : postRepository.findPostById(UUID.fromString(createPostRequest.getParentPostId())).orElseThrow();
+                : postRepository.findPostById(UUID.fromString(postRequest.getParentPostId())).orElseThrow();
         Post post = Post.builder()
-                .content(createPostRequest.getContent())
+                .content(postRequest.getContent())
                 .user(user)
                 .isDelete(false)
                 .parentPost(parentPost)
                 .build();
         post = postRepository.saveAndFlush(post);
-        if (createPostRequest.getFiles() != null &&
-                createPostRequest.getFiles().stream().anyMatch(file -> StringUtils.isNotBlank(file))) {
-            saveAllMediaFiles(createPostRequest.getFiles(), post);
+        if (postRequest.getFiles() != null &&
+                postRequest.getFiles().stream().anyMatch(file -> StringUtils.isNotBlank(file))) {
+            saveAllMediaFiles(postRequest.getFiles(), post);
         }
         return getPostDto(post.getId().toString());
     }
 
 
     @Override
-    public PostDto updatePost(UpdatePostRequest updatePostRequest) {
-        Post post = getPost(updatePostRequest.getPostId());
+    public PostDTO updatePost(PostRequest postRequest) {
+        Post post = getPost(postRequest.getPostId());
         if (post.getUser().getId() != userService.getCurrentUser().getId()) {
-            throw new BaseException(ErrorCode.UNAUTHORIZED);
+            throw new BaseException(ErrorMessage.UNAUTHORIZED);
         }
-        post.setContent(updatePostRequest.getContent());
-        if (updatePostRequest.getFiles() != null &&
-                updatePostRequest.getFiles().stream().anyMatch(file -> StringUtils.isNotBlank(file))) {
-            saveAllMediaFiles(updatePostRequest.getFiles(), post);
+        post.setContent(postRequest.getContent());
+        if (postRequest.getFiles() != null &&
+                postRequest.getFiles().stream().anyMatch(file -> StringUtils.isNotBlank(file))) {
+            saveAllMediaFiles(postRequest.getFiles(), post);
         }
-        List<UUID> deletedFileIds = updatePostRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
+        List<UUID> deletedFileIds = postRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
 
-        deleteMedia(deletedFileIds, UUID.fromString(updatePostRequest.getPostId()));
-        deleteMediaInCloud(updatePostRequest.getDeleteFileIds(), updatePostRequest.getPostId(), FolderNameConstant.POST);
+        deleteMedia(deletedFileIds, UUID.fromString(postRequest.getPostId()));
+        deleteMediaInCloud(postRequest.getDeleteFileIds(), postRequest.getPostId(), PostConstant.POST);
         post = postRepository.saveAndFlush(post);
         return getPostDto(post.getId().toString());
     }
@@ -93,30 +92,30 @@ public class PostServiceImp implements PostService {
     @Override
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
-                .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(ErrorMessage.POST_DOES_NOT_EXIST));
         if (post.getUser().getId() != userService.getCurrentUser().getId()) {
-            throw new BaseException(ErrorCode.UNAUTHORIZED);
+            throw new BaseException(ErrorMessage.UNAUTHORIZED);
         }
         post.setDelete(true);
         postRepository.save(post);
     }
 
     @Override
-    public Page<PostDto> getNews(PagingRequest pagingRequest) {
+    public Page<PostDTO> getNews(PagingRequest pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Post> posts = postRepository.getNews(pageable);
-        List<PostDto> postsDto = posts.stream().map(
+        List<PostDTO> postsDto = posts.stream().map(
                 post -> getPostDto(post.getId().toString())
         ).toList();
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
     }
 
     @Override
-    public PostDto getPostDto(String postId) {
+    public PostDTO getPostDto(String postId) {
         User user = userService.getCurrentUser();
         Post post = getPost(postId);
         List<Media> mediaList = getMediaByPostId(post.getId());
-        PostDto parentDto = ObjectUtils.isEmpty(post.getParentPost()) ? null :
+        PostDTO parentDto = ObjectUtils.isEmpty(post.getParentPost()) ? null :
                 postMapper.from(post.getParentPost(), getMediaByPostId(post.getParentPost().getId()), null, user);
         return postMapper.from(post, mediaList, parentDto, user);
     }
@@ -124,7 +123,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Post getPost(String postId) {
         return postRepository.findPostById(UUID.fromString(postId))
-                .orElseThrow(() -> new BaseException(ErrorCode.FAILED));
+                .orElseThrow(() -> new BaseException(ErrorMessage.FAILED));
     }
 
     @Override
@@ -151,9 +150,9 @@ public class PostServiceImp implements PostService {
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
                     decodedBytes, mediaType,
-                    FolderNameConstant.POST,
-                    String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), "/", media.getId()));
-            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+                    PostConstant.POST,
+                    String.format(CloudinaryConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), "/", media.getId()));
+            media.setMediaUrl(data.get(CloudinaryConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
         return mediaList;
@@ -163,7 +162,7 @@ public class PostServiceImp implements PostService {
         int index;
         index = mediaFile.indexOf("base64,");
         if (index < 0) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         index = index + 7;
         return mediaFile.substring(index);
@@ -172,7 +171,7 @@ public class PostServiceImp implements PostService {
     private static MediaType getMediaType(String mediaFile) {
         int index = mediaFile.indexOf("data:");
         if (index < 0) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         index = index + 5;
         return MediaType.valueOf(mediaFile.substring(index, index + 5).toUpperCase());
@@ -190,7 +189,7 @@ public class PostServiceImp implements PostService {
     private void deleteMediaInCloud(List<String> deleteFiles, String prefix, String folder) {
         for (String deleteFile : deleteFiles) {
             String publicId = String.format(
-                    FormatConstant.CLOUDINARY_PUBLIC_ID_DELETE_FORMAT,
+                    CloudinaryConstant.CLOUDINARY_PUBLIC_ID_DELETE_FORMAT,
                     folder,
                     prefix != null ? "/" + prefix : "",
                     "/",

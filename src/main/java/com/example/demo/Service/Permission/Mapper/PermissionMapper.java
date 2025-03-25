@@ -1,13 +1,13 @@
 package com.example.demo.Service.Permission.Mapper;
 
-import com.example.demo.Dto.PermissionDto;
+import com.example.demo.DTO.PermissionDTO;
 import com.example.demo.Entity.Permission;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PermissionMapper {
-    public PermissionDto mapper (Permission permission){
-        return PermissionDto.builder()
+    public PermissionDTO mapper (Permission permission){
+        return PermissionDTO.builder()
                 .id(permission.getId().toString())
                 .name(permission.getName())
                 .apiPath(permission.getApiPath())

@@ -1,10 +1,9 @@
 package com.example.demo.Entity;
 
-import com.example.demo.Common.TableName;
+import com.example.demo.Common.EntityName.TableName;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data

@@ -1,8 +1,8 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Common.Success.SuccessMessage;
-import com.example.demo.Dto.Response.ApiResponse;
-import com.example.demo.Dto.RoleDto;
+import com.example.demo.DTO.Response.ApiResponse;
+import com.example.demo.DTO.RoleDTO;
 import com.example.demo.Service.Role.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,23 +19,23 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
     @PostMapping
-    public ResponseEntity<ApiResponse<RoleDto>> createRole(@RequestBody RoleDto request) {
-        RoleDto response = roleService.createRole(request);
+    public ResponseEntity<ApiResponse<RoleDTO>> createRole(@RequestBody RoleDTO request) {
+        RoleDTO response = roleService.createRole(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.CREATED.value(), SuccessMessage.SUCCESS.getMessage(),response));
     }
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> deleteRole(@RequestBody RoleDto request){
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@RequestBody RoleDTO request){
         roleService.deleteRole(request);
         return  ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), null));
     }
     @PutMapping
-    public ResponseEntity<ApiResponse<RoleDto>> updateRole(@RequestBody RoleDto request){
-        RoleDto response = roleService.updateRole(request);
+    public ResponseEntity<ApiResponse<RoleDTO>> updateRole(@RequestBody RoleDTO request){
+        RoleDTO response = roleService.updateRole(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), response));
     }
     @GetMapping
-    public ResponseEntity<ApiResponse<List<RoleDto>>> getRole(){
-        List<RoleDto> response = roleService.getRole();
+    public ResponseEntity<ApiResponse<List<RoleDTO>>> getRole(){
+        List<RoleDTO> response = roleService.getRole();
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), response));
     }
 }

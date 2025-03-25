@@ -1,6 +1,6 @@
 package com.example.demo.Entity;
 
-import com.example.demo.Common.TableName;
+import com.example.demo.Common.EntityName.TableName;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;

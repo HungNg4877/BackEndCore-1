@@ -1,8 +1,8 @@
 package com.example.demo.Service.Permission.Imp;
 
-import com.example.demo.Common.Error.ErrorCode;
-import com.example.demo.Dto.PermissionDto;
-import com.example.demo.Dto.Request.PagingRequest;
+import com.example.demo.Common.Error.ErrorMessage;
+import com.example.demo.DTO.PermissionDTO;
+import com.example.demo.DTO.Request.PagingRequest;
 import com.example.demo.Entity.Permission;
 import com.example.demo.Entity.Role;
 import com.example.demo.Entity.RolePermission;
@@ -35,7 +35,7 @@ public class PermissionServiceImp implements PermissionService {
     @Autowired
     private RolePermissionRepository rolePermissionRepository;
     @Override
-    public PermissionDto createPermission(PermissionDto request) {
+    public PermissionDTO createPermission(PermissionDTO request) {
         // 1. Tìm kiếm Role theo tên (nếu không có thì báo lỗi)
         Role role = roleRepository.findByName(request.getRoleName());
         // 2. Tạo mới Permission từ dữ liệu trong request
@@ -55,14 +55,14 @@ public class PermissionServiceImp implements PermissionService {
         return permissionMapper.mapper(permission);
     }
     @Override
-    public Void deletePermission(PermissionDto request){
+    public Void deletePermission(PermissionDTO request){
         Permission permission = findById(request.getId());
         permission.setDelete(true);
         permissionRepository.save(permission);
         return null;
     }
     @Override
-    public PermissionDto updatePermission(PermissionDto request) {
+    public PermissionDTO updatePermission(PermissionDTO request) {
         Permission permission = findById(request.getId());
         permission.setName(request.getName());
         permission.setMethod(request.getMethod());
@@ -72,12 +72,12 @@ public class PermissionServiceImp implements PermissionService {
         return permissionMapper.mapper(permission);
     }
     @Override
-    public Page<PermissionDto> getPermission(PagingRequest<IdFilter> pagingRequest){
+    public Page<PermissionDTO> getPermission(PagingRequest<IdFilter> pagingRequest){
         Role role = roleRepository.findById(UUID.fromString(pagingRequest.getFilter().getId()))
-                .orElseThrow(()-> new BaseException(ErrorCode.FAILED));
+                .orElseThrow(()-> new BaseException(ErrorMessage.FAILED));
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Permission> permissions = permissionRepository.findAllPermssionById(role.getId(),pageable);
-        List<PermissionDto> responseList = permissions
+        List<PermissionDTO> responseList = permissions
                 .stream()
                 .map(permission -> permissionMapper.mapper(permission))
                 .collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class PermissionServiceImp implements PermissionService {
     }
     public Permission findById(String id){
         return permissionRepository.findById(UUID.fromString(id))
-                .orElseThrow(()-> new BaseException(ErrorCode.FAILED));
+                .orElseThrow(()-> new BaseException(ErrorMessage.FAILED));
     }
 
 }

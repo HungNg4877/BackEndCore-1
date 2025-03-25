@@ -8,7 +8,7 @@ public class EndPointConstant {
     public static final String USERS = BASE_API + "/user";
     public static final String ROLES = BASE_API + "/role";
     public static final String PERMISSIONS = BASE_API + "/permission";
-    public static final String COMMENTS = BASE_API + "/comment";
+    public static final String BOARDING_HOUSE = BASE_API + "/boarding_house";
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
     public static final String AUTH_REGISTER = "/register";

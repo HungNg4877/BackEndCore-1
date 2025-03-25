@@ -1,6 +1,6 @@
 package com.example.demo.Service.User.Imp;
 
-import com.example.demo.Common.Error.ErrorCode;
+import com.example.demo.Common.Error.ErrorMessage;
 import com.example.demo.Entity.User;
 import com.example.demo.Exception.BaseException;
 import com.example.demo.Repository.UserRepository;
@@ -23,18 +23,18 @@ public class UserServiceImp implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // JWTAuthenticationToken: Token + Principal(Info User) + Authorities
         if (!(authentication instanceof JwtAuthenticationToken)) {
-            throw new BaseException(ErrorCode.FAILED);
+            throw new BaseException(ErrorMessage.FAILED);
         }
         JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication; // Get Info Authority
         String email = jwtAuth.getToken().getClaim("sub"); // sub => email
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(ErrorMessage.USER_DOES_NOT_EXIST));
     }
 
     @Override
     public void softDeleteUser(String userId) {
         User user = userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(ErrorMessage.USER_DOES_NOT_EXIST));
         user.setDelete(true);
         userRepository.save(user);
     }

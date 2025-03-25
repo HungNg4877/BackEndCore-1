@@ -14,5 +14,4 @@ public class RolePermissionId implements Serializable {
         this.permissionId = permissionId;
     }
 
-    // Getters và Setters
 }

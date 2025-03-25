@@ -1,14 +1,12 @@
 package com.example.demo.Entity;
 
-import com.example.demo.Common.TableName;
+import com.example.demo.Common.EntityName.TableName;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +18,5 @@ public class Like extends BaseTimeEntity {
     private User user;
     @ManyToOne
     private Post post;
+
 }

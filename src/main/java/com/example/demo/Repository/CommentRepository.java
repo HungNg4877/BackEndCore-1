@@ -15,4 +15,6 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     long getTotalComments(@Param("postId") UUID postId);
     Page<Comment> findByPostIdAndParentCommentIsNull(UUID postId, Pageable pageable);
     List<Comment> findByParentCommentId(UUID parentCommentId);
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.isHidden = false AND c.isDelete = false AND c.parentComment IS NULL")
+    Page<Comment> findVisibleCommentsByPostId(@Param("postId") UUID postId, Pageable pageable);
 }

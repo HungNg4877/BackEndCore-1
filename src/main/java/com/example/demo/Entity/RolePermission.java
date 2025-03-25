@@ -21,7 +21,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class) // Kích hoạt audit
 @IdClass(RolePermissionId.class) // Xác định Composite Key
 @Table(name = "role_permission")
-public class    RolePermission implements Serializable {
+public class RolePermission implements Serializable {
 
     @Id
     @Column(name = "role_id")

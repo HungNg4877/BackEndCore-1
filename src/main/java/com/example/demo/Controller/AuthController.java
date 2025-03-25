@@ -1,12 +1,12 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Common.Success.SuccessMessage;
-import com.example.demo.Dto.Request.LoginRequest;
-import com.example.demo.Dto.Request.RegisterRequest;
-import com.example.demo.Dto.Request.SetPasswordRequest;
-import com.example.demo.Dto.Response.ApiResponse;
-import com.example.demo.Dto.Response.RegisterResponse;
-import com.example.demo.Dto.TokenDto;
+import com.example.demo.DTO.Request.LoginRequest;
+import com.example.demo.DTO.Request.RegisterRequest;
+import com.example.demo.DTO.Request.SetPasswordRequest;
+import com.example.demo.DTO.Response.ApiResponse;
+import com.example.demo.DTO.Response.RegisterResponse;
+import com.example.demo.DTO.TokenDTO;
 import com.example.demo.Service.Auth.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,14 +24,14 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @PostMapping(value = AUTH_LOGIN)
-    public ResponseEntity<ApiResponse<TokenDto>> login(@RequestBody @Valid LoginRequest request) {
-        TokenDto tokenReponse = authService.authenticate(request);
+    public ResponseEntity<ApiResponse<TokenDTO>> login(@RequestBody @Valid LoginRequest request) {
+        TokenDTO tokenReponse = authService.authenticate(request);
         return ResponseEntity.ok()
                 .body(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.LOGIN_SUCCESS.getMessage(), tokenReponse));
     }
     @PostMapping(value = REFRESH_TOKEN)
-    public ResponseEntity<ApiResponse<TokenDto>> refreshToken(HttpServletRequest request) {
-        TokenDto tokenReponse = authService.refreshToken(request);
+    public ResponseEntity<ApiResponse<TokenDTO>> refreshToken(HttpServletRequest request) {
+        TokenDTO tokenReponse = authService.refreshToken(request);
         return ResponseEntity.ok()
                 .body(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.LOGIN_SUCCESS.getMessage(), tokenReponse));
     }
@@ -48,9 +48,9 @@ public class AuthController {
                 .body(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.REGISTER_SUCCESS.getMessage(), null));
     }
     @PutMapping(value = AUTH_VERIFY_OTP)
-    public ResponseEntity<ApiResponse<TokenDto>> verifyAccount(@RequestParam(name = "email") String email,
+    public ResponseEntity<ApiResponse<TokenDTO>> verifyAccount(@RequestParam(name = "email") String email,
                                                                @RequestParam(name = "otp") String otp) {
-        TokenDto verifyOtpResponse = authService.verifyAccount(email,otp);
+        TokenDTO verifyOtpResponse = authService.verifyAccount(email,otp);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.SUCCESS.getMessage(), verifyOtpResponse));
     }
     @PostMapping(value = AUTH_FORGOT_PASSWORD)

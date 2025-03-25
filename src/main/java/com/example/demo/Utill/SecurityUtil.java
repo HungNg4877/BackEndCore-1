@@ -1,19 +1,13 @@
 package com.example.demo.Utill;
 
-import com.example.demo.Dto.Request.LoginRequest;
 import com.example.demo.Entity.Permission;
 import com.example.demo.Entity.User;
-import com.nimbusds.jose.util.Base64;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -44,7 +38,7 @@ public class SecurityUtil {
         List<String> permission = request.getRole().getRolePermissions().stream()
                 .map(rolePermission -> rolePermission.getPermission())// Lấy ra các đối tượng Permission
                 .map(Permission::getApiPath)// Lấy giá trị apiPath từ mỗi Permission
-                .collect(Collectors.toList()); // Thu thập kết quả thành một List<String> chứa tất cả apiPath.
+                .collect(Collectors.toList()); //  List<String> chứa tất cả apiPath.
 
         // @formatter:off //Data in Token (Payload)
         JwtClaimsSet claims = JwtClaimsSet.builder()

@@ -1,6 +1,6 @@
 package com.example.demo.Utill;
 
-import com.example.demo.Dto.Request.PagingRequest;
+import com.example.demo.DTO.Request.PagingRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;

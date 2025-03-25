@@ -1,13 +1,14 @@
-//package com.example.demo.Service.Setting;
-//
-//import com.example.demo.Common.SettingKey;
-//import com.example.demo.Dto.SettingDto;
-//
-//public interface SettingService {
-//    SettingDto createSetting(SettingDto settingRequest);
-//
-//    SettingDto updateSetting(SettingDto settingRequest);
-//
-//    int getMaxReport();
-//    String getValue(SettingKey settingKey);
-//}
+package com.example.demo.Service.Setting;
+import com.example.demo.Common.Setting.SettingKey;
+import com.example.demo.DTO.SettingDTO;
+
+
+public interface SettingService {
+    SettingDTO createSetting(SettingDTO settingRequest);
+
+    SettingDTO updateSetting(SettingDTO settingRequest);
+
+    int getMaxReport();
+
+    String getValue(SettingKey settingKey);
+}
