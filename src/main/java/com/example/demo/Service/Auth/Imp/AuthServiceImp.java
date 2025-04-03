@@ -192,4 +192,5 @@ public class AuthServiceImp implements AuthService {
     public User findByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(() -> new BaseException(ErrorMessage.USER_DOES_NOT_EXIST));
     }
+
 }

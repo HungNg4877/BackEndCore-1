@@ -21,10 +21,11 @@ public class UserController {
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), "User deleted successfully", null));
     }
-    @GetMapping(value = USER_ID)
-    public ResponseEntity<ApiResponse<User>> getUser(@PathVariable("userId") String id) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<User>> getUser() {
         User response = userService.getCurrentUser();
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), "Get Current User", response));
     }
+
 }
